@@ -1,0 +1,16 @@
+export XCURSOR_SIZE=18
+export HYPRCURSOR_SIZE=18
+export GTK_SCALE=2
+export GTK_THEME,Adwaita-dark
+
+#Enforce wayland
+export GDK_BACKEND="wayland,x11,*"
+export QT_QPA_PLATFORM="wayland;xcb"
+export SDL_VIDEODRIVER=wayland
+export CLUTTER_BACKEND=wayland
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+
+#XDG portal session
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland

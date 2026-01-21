@@ -1,6 +1,6 @@
-# My dotfiles
+# Lunear01's Hyprland Dotfiles
 
-This directory contains the dotfiles for my system
+This directory contains all dotfiles for my Arch + Hyprland Setup
 
 ## Requirements
 
@@ -23,7 +23,7 @@ pacman -S stow
 First, check out the dotfiles repo in your $HOME directory using git
 
 ```
-$ git clone git@github.com/dreamsofautonomy/dotfiles.git
+$ git clone https://github.com/Lunear01/hyprland-dotfiles.git
 $ cd dotfiles
 ```
 

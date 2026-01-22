@@ -34,7 +34,7 @@ window {
     padding:                     0px;
     border:                      0px solid;
     border-radius:               12px;
-    border-color:                @border-color;
+    border-color:                transparent;
     background-color:            @background;
     cursor:                      "default";
 }
@@ -146,7 +146,7 @@ element-icon {
 }
 element-text {
     background-color:            transparent;
-    text-color:                  inherit;
+    text-color:                  @foreground;
     highlight:                   inherit;
     cursor:                      inherit;
     vertical-align:              0.5;

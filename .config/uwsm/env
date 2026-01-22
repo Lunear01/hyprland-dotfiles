@@ -10,6 +10,11 @@ export SDL_VIDEODRIVER=wayland
 export CLUTTER_BACKEND=wayland
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 
+#Input Methods
+export XMODIFIERS=@im=fcitx
+export QT_IM_MODULE=fcitx
+export SDL_IM_MODULE=fcitx
+
 #XDG portal session
 export XDG_CURRENT_DESKTOP=Hyprland
 export XDG_SESSION_TYPE=wayland

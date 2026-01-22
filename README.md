@@ -2,6 +2,12 @@
 
 This directory contains all dotfiles for my Arch + Hyprland Setup
 
+
+## Pywal-16
+- All colors generatations its related scripts are configured to use Pywal-16 for color generation.
+
+
+
 ## Requirements
 
 Ensure you have the following installed on your system

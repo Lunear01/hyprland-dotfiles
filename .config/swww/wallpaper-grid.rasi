@@ -1,0 +1,106 @@
+/* ~/.config/rofi/wallpaper-grid-compact.rasi */
+
+/* Import pywal colors */
+@import "~/.cache/wal/colors-rofi-dark"
+
+configuration {
+    modi:                        "dmenu";
+    show-icons:                  true;
+    drun-display-format:         "{name}";
+}
+
+* {
+    font: "JetBrainsMono Nerd Font 10";
+}
+
+window {
+    /* Dimensions for a compact 3x3 grid */
+    width:                        700px;
+    height:                       600px;
+    
+    /* Transparency settings */
+    transparency:                "real";
+    background-color:            transparent;
+    cursor:                      "default";
+    border:                      0px;
+}
+
+mainbox {
+    enabled:                     true;
+    spacing:                     0px;
+    background-color:            rgba(30, 30, 30, 0.7); /* Subtle dark overlay */
+    border-radius:               15px;
+    children:                    [ "inputbar", "listview" ];
+}
+
+inputbar {
+    enabled:                     true;
+    padding:                     15px;
+    background-color:            transparent;
+    children:                    [ "prompt", "entry" ];
+}
+
+prompt {
+    enabled:                     true;
+    background-color:            transparent;
+    text-color:                  @foreground;
+}
+
+entry {
+    enabled:                     true;
+    background-color:            transparent;
+    text-color:                  @foreground;
+    cursor:                      text;
+    placeholder:                 "Search...";
+    placeholder-color:           inherit;
+}
+
+listview {
+    enabled:                     true;
+    columns:                     3;
+    lines:                       3;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    fixed-height:                true;
+    fixed-columns:               true;
+    
+    spacing:                     10px;
+    margin:                      10px;
+    background-color:            transparent;
+    text-color:                  @foreground;
+}
+
+element {
+    enabled:                     true;
+    spacing:                     10px;
+    margin:                      5px;
+    padding:                     10px;
+    border-radius:               10px;
+    background-color:            transparent;
+    text-color:                  @foreground;
+    orientation:                 vertical;
+    cursor:                      pointer;
+}
+
+element selected.normal {
+    background-color:            @selected-active-background;
+    text-color:                  @background;
+}
+
+element-icon {
+    background-color:            transparent;
+    size:                        140px; /* Larger icon, smaller label */
+    cursor:                      inherit;
+    horizontal-align:            0.5;
+}
+
+element-text {
+    background-color:            transparent;
+    text-color:                  inherit;
+    cursor:                      inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+}

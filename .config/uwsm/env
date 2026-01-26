@@ -1,5 +1,5 @@
-export XCURSOR_SIZE=18
-export HYPRCURSOR_SIZE=18
+export XCURSOR_SIZE=15
+export HYPRCURSOR_SIZE=15
 export GTK_SCALE=2
 export GTK_THEME,Adwaita-dark
 

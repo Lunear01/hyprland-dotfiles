@@ -6,7 +6,11 @@ This directory contains all dotfiles for my Arch + Hyprland Setup
 ## Pywal-16
 - All colors generatations its related scripts are configured to use Pywal-16 for color generation.
 
-
+## Preview
+![Desktop Preview](./assets/desktop.png)
+![Rofi](./assets/rofi.png)
+![Rofi-Wallpaper](./assets/wallpaper.png)
+![Windows](./assets/windows.png)
 
 ## Requirements
 

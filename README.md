@@ -11,6 +11,7 @@ This directory contains all dotfiles for my Arch + Hyprland Setup
 ![Rofi](./assets/rofi.png)
 ![Rofi-Wallpaper](./assets/wallpaper.png)
 ![Windows](./assets/windows.png)
+![Spicetify](./assets/spicetify.png)
 
 ## Requirements
 

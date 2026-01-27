@@ -1,1 +1,8 @@
-/home/lunear/.cache/wal/colors-cava
+[color]
+gradient = 1
+gradient_color_1 = '#45968d'
+gradient_color_2 = '#7b7d77'
+gradient_color_3 = '#754835'
+gradient_color_4 = '#835239'
+gradient_color_5 = '#8a5433'
+gradient_color_6 = '#b87212'

@@ -5,10 +5,11 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+fastfetch
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias die='poweroff'
-PS1='[\u@\h \W]\$ '
+PS1='------------------\n\[$(tput setaf 26)\][\[$(tput setaf 32)\]\u \[$(tput setaf 38)\]@ \[$(tput setaf 44)\]\h\[$(tput setaf 26)\]] \[$(tput setaf 75)\]\w\[$(tput sgr0)\]\n > '
 alias connect-uoft='TERM=xterm-256color ssh huangike@teach.cs.utoronto.ca'
 
 uoft-push() {

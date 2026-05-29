@@ -5,8 +5,8 @@
         "reload_style_on_change": true,
         "modules-left": ["clock","custom/pacman","tray"],
         "modules-center": ["hyprland/workspaces"],
-        "modules-right": ["group/expand","bluetooth","network","battery", "custom/notification"],
-
+        //"modules-right": ["group/expand","pulseaudio","bluetooth","network","battery", "custom/notification"],
+        "modules-right": ["backlight","pulseaudio","bluetooth","network","battery", "custom/notification"],
 
         "hyprland/workspaces": {
             "format": "{icon}",
@@ -46,29 +46,29 @@
                 "on-click": "shift_up"
             }
         },
-        // "pulseaudio": {
-        // "format": "{icon}  {volume}%",
-        // "format-bluetooth": "󰂱 {volume}%",
-        // "format-muted": "󰖁",
-        // "scroll-step": 1,
-        // "on-click": "pavucontrol",
-        // "ignored-sinks": ["Easy Effects Sink"],
-        // "format-icons": {
-        //     "headphone": "",
-        //     "hands-free": "",
-        //     "headset": "󰋎",
-        //     "phone": "",
-        //     "portable": "",
-        //     "car": "",
-        //     "default": ["󰖀", "󰕾"]
-        //     },
-        // "tooltip-format": "Volume: {volume}%"
-        // },
-        // "backlight": {
-        //     "device": "intel_backlight",
-        //     "format": "{icon}   {percent}%",
-        //     "format-icons": ["󰃞", "󰃟", "󰃠"]
-        // },
+        "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-bluetooth": "󰂱 {volume}%",
+        "format-muted": "󰖁",
+        "scroll-step": 1,
+        "on-click": "pavucontrol",
+        "ignored-sinks": ["Easy Effects Sink"],
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "󰋎",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["󰖀", "󰕾"]
+            },
+        "tooltip-format": "Volume: {volume}%"
+        },
+        "backlight": {
+            "device": "intel_backlight",
+            "format": "{icon}   {percent}%",
+            "format-icons": ["󰃞", "󰃟", "󰃠"]
+        },
         "network": {
             "format-wifi": "",
             "format-ethernet":"",

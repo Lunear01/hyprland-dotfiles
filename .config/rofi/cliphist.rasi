@@ -1,0 +1,125 @@
+/**
+ * Clipboard history theme — Pano / Copyous-style card grid.
+ *   • Flowing grid of rounded preview cards (thumbnail on top, caption below).
+ *   • Accent border + lift on the selected card.
+ *   • Colours come from pywal so it tracks the active wallpaper.
+ * Used by ~/.config/hypr/scripts/cliphist-rofi.sh (SUPER+V).
+ **/
+
+@import "/home/lunear/.cache/wal/colors-rofi-dark.rasi"
+
+* {
+    accent:        @selected-normal-background;
+    card-bg:       #ffffff12;
+    card-bg-alt:   #ffffff08;
+    card-sel-bg:   #ffffff1f;
+    text-col:      @foreground;
+    text-dim:      #ffffff80;
+    font:          "Adwaita Sans 11";
+}
+
+configuration {
+    show-icons: true;
+}
+
+/*****----- Window -----*****/
+/* Docked as a horizontal strip across the lower part of the screen, like the
+   Copyous/Pano bar. anchor:south pins it to the bottom; full width + a small
+   lift off the edge. */
+window {
+    transparency:   "real";
+    location:       south;
+    anchor:         south;
+    fullscreen:     false;
+    width:          99%;
+    y-offset:       -14px;
+    border-radius:  20px;
+    padding:        0px;
+    background-color: @background;
+    cursor:         "default";
+}
+
+mainbox {
+    padding:    22px;
+    spacing:    18px;
+    background-color: transparent;
+    children:   [ "inputbar", "listview" ];
+}
+
+/*****----- Search bar -----*****/
+inputbar {
+    spacing:        12px;
+    padding:        14px 18px;
+    border-radius:  14px;
+    background-color: @card-bg-alt;
+    text-color:     @text-col;
+    children:       [ "prompt", "entry" ];
+}
+prompt {
+    enabled:     true;
+    text-color:  @accent;
+    background-color: transparent;
+}
+entry {
+    placeholder:        "Search clipboard…";
+    placeholder-color:  @text-dim;
+    text-color:         @text-col;
+    background-color:   transparent;
+    cursor:             text;
+}
+
+/*****----- Card strip (single horizontal row, scrolls sideways) -----*****/
+listview {
+    columns:        7;
+    lines:          1;
+    cycle:          true;
+    dynamic:        true;
+    scrollbar:      false;
+    layout:         vertical;
+    fixed-height:   true;
+    fixed-columns:  true;
+    spacing:        14px;
+    padding:        2px;
+    background-color: transparent;
+    text-color:     @text-col;
+}
+
+/*****----- Cards -----*****/
+/* Each entry is a pre-rendered square card image (text/colour/thumbnail are
+   baked in by the script), so the element is just the icon — no caption. */
+element {
+    padding:        8px;
+    border:         2px solid;
+    border-radius:  16px;
+    border-color:   transparent;
+    background-color: @card-bg;
+    text-color:     @text-col;
+    cursor:         pointer;
+    children:       [ "element-icon" ];
+}
+element alternate.normal {
+    background-color: @card-bg;
+}
+element selected.normal {
+    background-color: @card-sel-bg;
+    border-color:     @accent;
+    text-color:       @text-col;
+}
+element-icon {
+    size:           200px;
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    background-color: transparent;
+    cursor:         inherit;
+}
+element-text {
+    enabled:        false;
+}
+
+/*****----- Messages -----*****/
+error-message {
+    padding:        15px;
+    border-radius:  14px;
+    background-color: @background;
+    text-color:     @text-col;
+}

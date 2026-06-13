@@ -1,7 +1,7 @@
 export XCURSOR_SIZE=15
 export HYPRCURSOR_SIZE=15
 export GTK_SCALE=2
-export GTK_THEME,Adwaita-dark
+export GTK_THEME=adw-gtk3-dark
 
 #Enforce wayland
 export GDK_BACKEND="wayland,x11,*"

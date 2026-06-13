@@ -1,82 +1,116 @@
 @import "../../.cache/wal/colors-waybar.css";
 
 * {
-    font-size:14px;
+    font-size: 14px;
     font-family: "CodeNewRoman Nerd Font Propo";
-}
-window#waybar{
-    all:unset;
+    min-height: 0;
 }
 
-/* Shared module bar styles — margins differ per side */
-.modules-left, .modules-center, .modules-right {
-    padding: 7px;
-    border-radius: 10px;
-    background: alpha(@background, .6);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+window#waybar {
+    all: unset;
+    background: transparent;
 }
-.modules-left   { margin: 10 0 5 10; }
-.modules-center { margin: 10 0 5 0; }
-.modules-right  { margin: 10 10 5 0; }
+
+/* ── Floating pill groups ─────────────────────────────────────────── */
+.modules-left, .modules-center, .modules-right {
+    padding: 3px 8px;
+    border-radius: 16px;
+    background: alpha(@background, .92);
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, .6);
+    border: 1px solid alpha(@color9, .35);
+}
+.modules-left   { margin: 8px 0 4px 10px; }
+.modules-center { margin: 8px 0 4px 0;    }
+.modules-right  { margin: 8px 10px 4px 0; }
 
 tooltip {
-    background:@background;
-    color: @color7;
+    background: @background;
+    border: 1px solid alpha(@color9, .4);
+    border-radius: 10px;
+}
+tooltip label {
+    color: @foreground;
 }
 
-/* Base style shared by all status widgets */
-#clock, #custom-pacman, #custom-notification,
-#bluetooth, #network, #battery,
-#cpu, #memory, #temperature {
-    padding: 0px 5px;
-    transition: all .3s ease;
-    color: @color7;
+/* ── Shared widget styling ────────────────────────────────────────── */
+#clock,
+#custom-clipboard,
+#custom-colorpicker,
+#custom-notification,
+#backlight,
+#pulseaudio,
+#bluetooth,
+#network,
+#battery,
+#cpu,
+#memory,
+#temperature {
+    padding: 2px 9px;
+    margin: 2px 1px;
+    color: @foreground;
+    border-radius: 10px;
+    transition: all .25s ease;
 }
 
-#clock:hover, #custom-pacman:hover, #custom-notification:hover,
-#bluetooth:hover, #network:hover, #battery:hover,
-#cpu:hover, #memory:hover, #temperature:hover {
-    transition: all .3s ease;
+#clock:hover,
+#custom-clipboard:hover,
+#custom-colorpicker:hover,
+#custom-notification:hover,
+#backlight:hover,
+#pulseaudio:hover,
+#bluetooth:hover,
+#network:hover,
+#battery:hover,
+#cpu:hover,
+#memory:hover,
+#temperature:hover {
+    background: alpha(@color9, .15);
     color: @color9;
 }
 
+#clock {
+    color: @foreground;
+    font-weight: bold;
+}
+#custom-clipboard { color: @color9; }
+#network          { color: @color9; }
+#custom-notification { color: @color7; }
+
+/* ── Workspaces (numbered, active = accent pill) ──────────────────── */
 #workspaces {
-    padding: 0px 5px;
+    padding: 0px 2px;
 }
 #workspaces button {
-    all:unset;
-    padding: 0px 5px;
-    color: alpha(@color9,.4);
+    all: unset;
+    min-width: 22px;
+    margin: 2px 3px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    color: alpha(@color7, .8);
+    background: alpha(@color7, .1);
     transition: all .2s ease;
 }
 #workspaces button:hover {
-    color:rgba(0,0,0,0);
-    border: none;
-    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, .5);
-    transition: all 1s ease;
+    color: @color9;
+    background: alpha(@color9, .18);
 }
 #workspaces button.active {
-    color: @color9;
-    border: none;
-    text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
+    color: @background;
+    background: @color9;
+    box-shadow: 0px 0px 6px alpha(@color9, .5);
+    padding: 1px 14px;
+    font-weight: bold;
 }
 #workspaces button.empty {
-    color: rgba(0,0,0,0);
-    border: none;
-    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, .2);
+    color: alpha(@color7, .45);
+    background: transparent;
 }
-#workspaces button.empty:hover {
-    color: rgba(0,0,0,0);
-    border: none;
-    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, .5);
-    transition: all 1s ease;
-}
-#workspaces button.empty.active {
-    color: @color9;
-    border: none;
-    text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
+#workspaces button.urgent {
+    color: @background;
+    background: @color3;
 }
 
+/* ── Battery states ───────────────────────────────────────────────── */
 #battery.charging {
     color: #26A65B;
 }
@@ -91,40 +125,36 @@ tooltip {
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
+@keyframes blink {
+    to { color: #ffffff; }
+}
 
+/* ── Expandable cpu/mem/temp drawer ───────────────────────────────── */
 #group-expand {
-    padding: 0px 5px;
-    transition: all .3s ease;
+    padding: 0px 2px;
 }
 #custom-expand {
-    padding: 0px 5px;
-    color: alpha(@foreground, .2);
-    text-shadow: 0px 0px 2px rgba(0, 0, 0, .7);
+    padding: 2px 8px;
+    color: alpha(@foreground, .4);
     transition: all .3s ease;
 }
 #custom-expand:hover {
-    color: rgba(255,255,255,.2);
-    text-shadow: 0px 0px 2px rgba(255, 255, 255, .5);
+    color: @color9;
 }
-
-#custom-colorpicker {
-    padding: 0px 5px;
-}
-
 #custom-endpoint {
     color: transparent;
-    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, 1);
 }
 
+/* ── Tray ─────────────────────────────────────────────────────────── */
 #tray {
-    padding: 0px 5px;
-    transition: all .3s ease;
+    padding: 0px 6px;
 }
 #tray menu * {
-    padding: 0px 5px;
-    transition: all .3s ease;
+    padding: 0px 6px;
 }
-#tray menu separator {
-    padding: 0px 5px;
-    transition: all .3s ease;
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
 }

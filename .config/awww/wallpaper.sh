@@ -31,8 +31,11 @@ main() {
 
     uwsm app -- awww img "$selected_wallpaper" --transition-type any --transition-fps 60 --transition-duration 0.5
     
-    wal -i "$selected_wallpaper" -q -n --cols16
-    
+    wal -i "$selected_wallpaper" -q -n --cols16 --saturate 0.7
+
+    # Re-read the freshly generated pywal palette into hyprland.lua (border colors)
+    hyprctl reload 2>/dev/null || true
+
     uwsm app -- swaync-client --reload-css 2>/dev/null || true
     
     pkill -USR2 waybar 2>/dev/null || true

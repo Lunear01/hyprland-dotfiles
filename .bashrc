@@ -11,6 +11,7 @@ alias grep='grep --color=auto'
 alias die='poweroff'
 PS1='------------------\n\[$(tput setaf 26)\][\[$(tput setaf 32)\]\u \[$(tput setaf 38)\]@ \[$(tput setaf 44)\]\h\[$(tput setaf 26)\]] \[$(tput setaf 75)\]\w\[$(tput sgr0)\]\n > '
 alias connect-uoft='TERM=xterm-256color ssh huangike@teach.cs.utoronto.ca'
+alias ssh="kitty +kitten ssh"
 
 uoft-push() {
     scp -r "$1" huangike@teach.cs.utoronto.ca:~;

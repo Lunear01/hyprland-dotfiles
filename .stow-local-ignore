@@ -1,0 +1,13 @@
+# Nodes stow must NOT symlink into $HOME.
+# (Providing this file replaces stow's built-in default ignore list, so the
+#  usual VCS/README entries are repeated here.)
+\.git
+\.gitignore
+\.gitmodules
+\.stow-local-ignore
+README.*
+LICENSE.*
+# Repo-only files that are not meant to live in $HOME
+setup\.sh
+assets
+\.claude

@@ -3,7 +3,7 @@
         "position": "top",
         "spacing": 0,
         "reload_style_on_change": true,
-        "modules-left": ["custom/clipboard", "custom/colorpicker", "clock"],
+        "modules-left": ["custom/clipboard", "clock"],
         "modules-center": ["hyprland/workspaces"],
         "modules-right": ["group/expand", "backlight", "pulseaudio", "bluetooth", "network", "battery", "custom/notification", "tray"],
 

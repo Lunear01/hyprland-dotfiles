@@ -72,6 +72,12 @@ hl.on("hyprland.start", function()
     hl.exec_cmd(uwsm .. "fcitx5 -d")
     hl.exec_cmd(uwsm .. "awww-daemon")
 
+    -- GNOME-style window switcher daemon (hyprshell). Registers its own
+    -- SUPER+TAB Switch-mode binding: hold SUPER, tap TAB to cycle, release to
+    -- commit. Config lives in ~/.config/hyprshell/config.json5.
+    hl.exec_cmd("systemctl --user enable --now hyprshell.service")
+
+
     -- Restore the last wallpaper once the daemon is up
     hl.exec_cmd("sleep 1 && awww img " .. home .. "/wallpapers/pywallpaper.jpg --transition-type any")
 
@@ -264,6 +270,11 @@ hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+
+-- GNOME-style app switcher: SUPER+TAB is owned by the hyprshell daemon (see the
+-- autostart block) — hold SUPER, tap TAB to cycle, release to commit.
+-- The older rofi window picker (fuzzy-search, Enter to switch) lives on SUPER+`.
+hl.bind(mainMod .. " + grave", hl.dsp.exec_cmd(home .. "/.config/hypr/scripts/window-switcher.sh"))
 
 -- Workspaces: switch (SUPER+N) and move window (SUPER+SHIFT+N)
 for i = 1, 10 do

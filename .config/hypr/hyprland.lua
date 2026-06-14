@@ -3,7 +3,7 @@
 -- │  https://wiki.hypr.land/Configuring/Start/                            │
 -- ╰──────────────────────────────────────────────────────────────────────╯
 
-local home = os.getenv("HOME") or "/home/lunear"
+local home = os.getenv("HOME") or ("/home/" .. (os.getenv("USER") or "user"))
 
 -- ───────────────────────────── COLOR THEMING ─────────────────────────────
 -- pywal writes ~/.cache/wal/colors-hyprland.lua from the template in

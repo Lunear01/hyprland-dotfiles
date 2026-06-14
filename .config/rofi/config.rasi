@@ -17,7 +17,7 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import                          "/home/lunear/.cache/wal/colors-rofi-dark.rasi"
+@import                          "~/.cache/wal/colors-rofi-dark.rasi"
 
 /*****----- Main Window -----*****/
 window {

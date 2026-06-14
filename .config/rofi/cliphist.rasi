@@ -6,7 +6,7 @@
  * Used by ~/.config/hypr/scripts/cliphist-rofi.sh (SUPER+V).
  **/
 
-@import "/home/lunear/.cache/wal/colors-rofi-dark.rasi"
+@import "~/.cache/wal/colors-rofi-dark.rasi"
 
 * {
     accent:        @selected-normal-background;

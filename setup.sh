@@ -316,6 +316,41 @@ install_spicetify_fedora() {
 }
 
 # ===========================================================================
+# Cross-distro: point spicetify at this machine's Spotify install
+# ===========================================================================
+# config-xpui.ini ships with empty spotify_path/prefs_path: they must be
+# absolute and spicetify does NOT expand ~ or $HOME, so they can't be stored
+# portably in the repo. Detect and set them for the current user/install here.
+configure_spicetify() {
+    command -v spicetify >/dev/null || return
+    [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] || return
+    info "Configuring spicetify paths for this machine..."
+
+    # prefs file: native install vs Flatpak
+    local prefs
+    for prefs in \
+        "$HOME/.config/spotify/prefs" \
+        "$HOME/.var/app/com.spotify.Client/config/spotify/prefs"; do
+        [[ -f "$prefs" ]] && { spicetify config prefs_path "$prefs" >/dev/null 2>&1; break; }
+    done
+
+    # Spotify install dir: spotify-launcher (Arch), distro package, or Flatpak
+    local sp
+    for sp in \
+        "$HOME/.local/share/spotify-launcher/install/usr/share/spotify" \
+        "/opt/spotify" \
+        "/usr/share/spotify" \
+        "/var/lib/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify" \
+        "$HOME/.local/share/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify"; do
+        if [[ -d "$sp" ]]; then
+            spicetify config spotify_path "$sp" >/dev/null 2>&1
+            return
+        fi
+    done
+    MANUAL_NOTES+=("spicetify: could not auto-detect spotify_path — once Spotify is installed run 'spicetify config spotify_path <dir>' (then 'spicetify backup apply')")
+}
+
+# ===========================================================================
 # Cross-distro: nvm (referenced in .bashrc, lives in ~/.config/nvm)
 # ===========================================================================
 install_nvm() {
@@ -355,6 +390,7 @@ if [[ "$STOW" -eq 1 ]]; then
     cd "$DOTFILES_DIR"
     stow --target="$HOME" --restow . \
         || die "stow failed — resolve conflicts (back up clashing files) and re-run 'stow .'"
+    configure_spicetify
 else
     info "Skipping stow (--no-stow). Run 'stow .' from $DOTFILES_DIR when ready."
 fi

@@ -47,7 +47,11 @@ $ ./setup.sh --help     # usage
 > expects a fully-updated base — the script runs `dnf upgrade` first. If a COPR
 > dependency is momentarily out of sync you may need to re-run the script later.
 > Packages with no Fedora package (`awww`, `hyprshell`, `pywal16`, `spicetify`)
-> are built/installed from source via cargo/pipx automatically.
+> are built/installed from source via cargo/pipx automatically. The script
+> installs a current Rust via `rustup` for these builds, since `hyprshell`
+> requires **rustc 1.92+** (newer than Fedora's packaged Rust); it also needs
+> `gtk4 ≥ 4.18` and `libadwaita ≥ 1.8` from your base system, so a current
+> Fedora release is recommended.
 
 ### Manual stow only
 

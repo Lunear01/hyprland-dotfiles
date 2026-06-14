@@ -148,9 +148,14 @@ install_fedora() {
         # theming / color generation / misc
         python3 python3-pip pipx ImageMagick adw-gtk3-theme fastfetch jq cava
 
-        # Build deps for awww / hyprshell (Rust toolchain comes from rustup)
+        # Build deps for the Rust source builds (the toolchain itself comes
+        # from rustup, below). awww needs wayland + the wayland-protocols .xml
+        # files + lz4; hyprshell needs gtk4 (>=4.18), libadwaita (>=1.8) and
+        # gtk4-layer-shell. Missing libadwaita/wayland-protocols headers are the
+        # usual cause of a "cargo build failed" on a fresh Fedora.
         gcc pkgconf-pkg-config
-        gtk4-devel gtk4-layer-shell-devel wayland-devel libxkbcommon-devel lz4-devel
+        gtk4-devel libadwaita-devel gtk4-layer-shell-devel
+        wayland-devel wayland-protocols-devel libxkbcommon-devel lz4-devel
 
         # fonts (Adwaita Sans family; Nerd fonts handled separately)
         adwaita-sans-fonts
@@ -186,36 +191,67 @@ install_fedora() {
     # awww (wallpaper daemon) and hyprshell are not packaged for Fedora —
     # build them from source with cargo. --root ~/.local drops the binaries
     # into ~/.local/bin, which .bashrc already puts on PATH.
-    ensure_rustup
-    build_cargo "awww" "cargo install --root $HOME/.local --git https://codeberg.org/LGFae/awww"
-    build_cargo "hyprshell" "cargo install --root $HOME/.local hyprshell"
+    ensure_rustup || warn "rustup unavailable — the source builds will try a system cargo and may fail."
+    # awww is a cargo workspace with two binary packages (awww + awww-daemon),
+    # so both must be named explicitly — a bare `--git` install errors out with
+    # "multiple packages with binaries found".
+    build_cargo awww      install --root "$HOME/.local" --git https://codeberg.org/LGFae/awww awww awww-daemon
+    build_cargo hyprshell install --root "$HOME/.local" hyprshell
 }
 
-# Install/refresh a Rust toolchain via rustup so the cargo builds get a
-# current rustc (hyprshell's MSRV outpaces Fedora's packaged rust).
+# Path to the cargo from the rustup-managed stable toolchain. Resolved by
+# ensure_rustup; build_cargo invokes it explicitly so an older system cargo on
+# $PATH can never shadow it during the source builds.
+RUSTUP_CARGO=""
+
+# Install/refresh a rustup-managed stable toolchain so the cargo source builds
+# get a current rustc. hyprshell's MSRV (rustc 1.92+) outpaces the rust Fedora
+# ships, so we must not fall back to a stale system cargo.
 ensure_rustup() {
-    if ! command -v rustup >/dev/null && [[ ! -x "$HOME/.cargo/bin/rustup" ]]; then
-        info "Installing rustup (stable toolchain)..."
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
-            | sh -s -- -y --default-toolchain stable --no-modify-path \
-            || { MANUAL_NOTES+=("rustup: install failed — see https://rustup.rs, then build awww/hyprshell with cargo"); return; }
+    local rustup_bin=""
+    if command -v rustup >/dev/null;        then rustup_bin="$(command -v rustup)"
+    elif [[ -x "$HOME/.cargo/bin/rustup" ]]; then rustup_bin="$HOME/.cargo/bin/rustup"
     fi
-    # Make cargo/rustc available to this script without a new shell.
+
+    if [[ -z "$rustup_bin" ]]; then
+        info "Installing rustup (stable toolchain)..."
+        if curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+              | sh -s -- -y --default-toolchain stable --profile minimal --no-modify-path; then
+            rustup_bin="$HOME/.cargo/bin/rustup"
+        else
+            MANUAL_NOTES+=("rustup: install failed — see https://rustup.rs, then build awww/hyprshell with cargo")
+            return 1
+        fi
+    fi
+
+    # Make cargo/rustc available to this script without opening a new shell.
     [[ -r "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
-    rustup update stable >/dev/null 2>&1 || true
+    "$rustup_bin" toolchain install stable --profile minimal >/dev/null 2>&1 || true
+    "$rustup_bin" update stable >/dev/null 2>&1 || true
+
+    # Resolve the stable toolchain's cargo explicitly (not whatever is on $PATH).
+    if RUSTUP_CARGO="$("$rustup_bin" which --toolchain stable cargo 2>/dev/null)" \
+        && [[ -n "$RUSTUP_CARGO" ]]; then
+        info "Using $("$RUSTUP_CARGO" --version 2>/dev/null) for source builds."
+    else
+        RUSTUP_CARGO="cargo"
+        return 1
+    fi
 }
 
-# Build a Rust package with cargo, recording a manual note if it fails
-# (e.g. the system rustc is older than the package's MSRV).
+# Build/install a Rust binary with cargo, recording a manual note if it fails
+# (e.g. the toolchain is older than the package's MSRV, or a -devel header is
+# missing). Usage: build_cargo <binary-name> <cargo args...>
 build_cargo() {
-    local name="$1" cmd="$2"
+    local name="$1"; shift
     if command -v "$name" >/dev/null; then
         info "$name already installed — skipping cargo build."
         return
     fi
+    local cargo="${RUSTUP_CARGO:-cargo}"
     info "Building $name from source with cargo..."
-    if ! $cmd; then
-        MANUAL_NOTES+=("$name: cargo build failed — likely the system Rust is older than the package's MSRV. Install a newer toolchain via rustup and re-run: $cmd")
+    if ! "$cargo" "$@"; then
+        MANUAL_NOTES+=("$name: cargo build failed. Check that a recent rustup toolchain is active (hyprshell needs rustc 1.92+) and the build -devel headers are installed, then retry: $cargo $*")
     fi
 }
 

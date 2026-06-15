@@ -189,14 +189,15 @@ install_fedora() {
     fi
 
     # awww (wallpaper daemon) and hyprshell are not packaged for Fedora —
-    # build them from source with cargo. --root ~/.local drops the binaries
-    # into ~/.local/bin, which .bashrc already puts on PATH.
+    # build them from source with cargo.
     ensure_rustup || warn "rustup unavailable — the source builds will try a system cargo and may fail."
-    # awww is a cargo workspace with two binary packages (awww + awww-daemon),
-    # so both must be named explicitly — a bare `--git` install errors out with
+    # awww is a pure binary, so `--root ~/.local` (on PATH via .bashrc) is enough.
+    # It's a cargo workspace with two binary packages (awww + awww-daemon), so
+    # both must be named explicitly — a bare `--git` install errors out with
     # "multiple packages with binaries found".
-    build_cargo awww      install --root "$HOME/.local" --git https://codeberg.org/LGFae/awww awww awww-daemon
-    build_cargo hyprshell install --root "$HOME/.local" hyprshell
+    build_cargo awww install --root "$HOME/.local" --git https://codeberg.org/LGFae/awww awww awww-daemon
+    # hyprshell needs more than a binary (systemd unit + data dir) — handled below.
+    build_hyprshell_fedora
 }
 
 # Path to the cargo from the rustup-managed stable toolchain. Resolved by
@@ -253,6 +254,59 @@ build_cargo() {
     if ! "$cargo" "$@"; then
         MANUAL_NOTES+=("$name: cargo build failed. Check that a recent rustup toolchain is active (hyprshell needs rustc 1.92+) and the build -devel headers are installed, then retry: $cargo $*")
     fi
+}
+
+# Build + install hyprshell on Fedora (no distro package exists).
+#
+# Unlike awww, hyprshell is a GTK4 app that needs more than a bare binary: a
+# systemd *user unit* and a /usr/share/hyprshell *data dir* (its default
+# --system-data-dir). `cargo install` would drop ONLY the binary, so
+# `systemctl --user enable hyprshell.service` (run from hyprland.lua autostart)
+# would fail with "unit not found" and the daemon would have no data dir.
+#
+# So we replicate upstream's PKGBUILD: build from the published crate (which
+# bundles packaging/hyprshell.service + packaging/usr-share.tar), then install
+# the binary, unit and data into the SAME system paths the Arch package uses.
+# That also lets the stowed systemd drop-in — which points ExecStart at
+# /usr/bin/hyprshell — work unchanged on both distros.
+build_hyprshell_fedora() {
+    if command -v hyprshell >/dev/null && [[ -f /usr/lib/systemd/user/hyprshell.service ]]; then
+        info "hyprshell already installed (binary + unit) — skipping."
+        return
+    fi
+    local cargo="${RUSTUP_CARGO:-cargo}"
+
+    # Resolve the latest non-yanked release from the crates.io sparse index
+    # (newline-delimited JSON, one object per version in publish order).
+    local ver
+    ver="$(curl -fsSL https://index.crates.io/hy/pr/hyprshell 2>/dev/null \
+        | jq -rs 'map(select(.yanked | not)) | last | .vers' 2>/dev/null)"
+    if [[ -z "$ver" || "$ver" == "null" ]]; then
+        MANUAL_NOTES+=("hyprshell: could not resolve latest version from crates.io — build manually from github.com/H3rmt/hyprshell")
+        return
+    fi
+
+    local tmp; tmp="$(mktemp -d)"
+    info "Building hyprshell $ver from source (crate)..."
+    if ! curl -fsSL "https://static.crates.io/crates/hyprshell/hyprshell-$ver.crate" \
+            | tar -xz -C "$tmp"; then
+        MANUAL_NOTES+=("hyprshell: failed to download/extract crate $ver — build manually from github.com/H3rmt/hyprshell")
+        rm -rf "$tmp"; return
+    fi
+    local src="$tmp/hyprshell-$ver"
+    if ! ( cd "$src" && RUSTUP_TOOLCHAIN=stable "$cargo" build --release --locked ); then
+        MANUAL_NOTES+=("hyprshell: cargo build failed (needs rustc 1.92+ and gtk4/libadwaita/gtk4-layer-shell -devel headers). Retry in $src with: $cargo build --release --locked")
+        rm -rf "$tmp"; return
+    fi
+
+    info "Installing hyprshell into system paths (binary, unit, data dir)..."
+    # Mirror the upstream PKGBUILD package() step (system paths == Arch package).
+    sudo install -Dm755 "$src/target/release/hyprshell"   /usr/bin/hyprshell
+    sudo install -Dm644 "$src/packaging/hyprshell.service" /usr/lib/systemd/user/hyprshell.service
+    sudo rm -rf /usr/share/hyprshell
+    sudo mkdir -p /usr/share/hyprshell
+    sudo tar -xf "$src/packaging/usr-share.tar" -C /usr/share/hyprshell
+    rm -rf "$tmp"
 }
 
 # ===========================================================================
@@ -391,6 +445,10 @@ if [[ "$STOW" -eq 1 ]]; then
     stow --target="$HOME" --restow . \
         || die "stow failed — resolve conflicts (back up clashing files) and re-run 'stow .'"
     configure_spicetify
+    # The stowed systemd drop-in (hyprshell.service.d/override.conf) now points
+    # hyprshell at config.json5 — reload so the override is live before the
+    # service is first started by the hyprland.lua autostart.
+    systemctl --user daemon-reload 2>/dev/null || true
 else
     info "Skipping stow (--no-stow). Run 'stow .' from $DOTFILES_DIR when ready."
 fi

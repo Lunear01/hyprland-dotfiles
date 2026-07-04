@@ -82,10 +82,12 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("sleep 1 && awww img " .. home .. "/wallpapers/pywallpaper.jpg --transition-type any")
 
     -- Clipboard history (text + images) — requires `cliphist`
-    -- Keep only the 7 most recent entries so the store stays small and the
-    -- SUPER+V picker (which builds preview cards) starts up fast.
-    hl.exec_cmd("wl-paste --type text --watch cliphist store -max-items 7")
-    hl.exec_cmd("wl-paste --type image --watch cliphist store -max-items 7")
+    -- Keep only the 14 most recent entries (2 pages of 7 in the SUPER+V picker)
+    -- so the store stays small and the picker (which builds preview cards)
+    -- starts up fast. cliphist 0.7's -max-items doesn't trim, so the store
+    -- wrapper stores + hard-trims to 14 (see scripts/cliphist-store.sh).
+    hl.exec_cmd("wl-paste --type text --watch " .. home .. "/.config/hypr/scripts/cliphist-store.sh")
+    hl.exec_cmd("wl-paste --type image --watch " .. home .. "/.config/hypr/scripts/cliphist-store.sh")
 end)
 
 
@@ -109,10 +111,12 @@ hl.config({
 
         border_size = 2,
 
-        -- Animated pywal gradient border on the focused window.
+        -- Animated brand gradient border on the focused window. Fixed colors
+        -- (blue -> purple -> pink) so the accent stays vivid regardless of the
+        -- wallpaper pywal extracts; the palette table still tints elsewhere.
         col = {
-            active_border   = { colors = { palette.color4, palette.color5, palette.color6 }, angle = 45 },
-            inactive_border = palette.color8,
+            active_border   = { colors = { "rgba(3a86ffff)", "rgba(9d4eddff)", "rgba(ff7096ff)" }, angle = 45 },
+            inactive_border = "rgba(4a4a55ff)",
         },
 
         resize_on_border = true,
@@ -358,11 +362,13 @@ hl.window_rule({
 
 -- ─────────────────────────── LAYER RULES ───────────────────────────
 -- See https://wiki.hypr.land/Configuring/Basics/Window-Rules/#layer-rules
-hl.layer_rule({ match = { namespace = "waybar" }, blur = true, ignore_alpha = 0.5 })
+-- ignore_alpha kept low so the low-alpha liquid-glass fills (waybar pills at
+-- ~0.55, rofi pane at ~0.55) still get blurred rather than skipped.
+hl.layer_rule({ match = { namespace = "waybar" }, blur = true, ignore_alpha = 0.2 })
 hl.layer_rule({
     match        = { namespace = "rofi" },
     blur         = true,
-    ignore_alpha = 0.3,
+    ignore_alpha = 0.1,
     dim_around   = true,
     animation    = "popin",
 })

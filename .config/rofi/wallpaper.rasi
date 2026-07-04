@@ -1,0 +1,115 @@
+/* Wallpaper picker — 3x3 image-preview grid, liquid-glass.
+ * Entries are fed as "name\0icon\x1f/path/to/image" by awww/wallpaper.sh so
+ * rofi renders each wallpaper thumbnail as the element icon.
+ * Colors come from pywal via ~/.cache/wal/colors-rofi.rasi. */
+@import "~/.cache/wal/colors-rofi.rasi"
+
+configuration {
+    show-icons:          true;
+    font:                "JetBrainsMono Nerd Font 10";
+}
+
+* {
+    text-color:          @foreground;
+    background-color:    transparent;
+}
+
+window {
+    transparency:        "real";
+    location:            center;
+    anchor:              center;
+    width:               700px;
+    border:              1px solid;
+    border-radius:       16px;
+    border-color:        @glass-sheen;
+    background-color:    @glass;
+    padding:             12px;
+    cursor:              "default";
+}
+
+mainbox {
+    spacing:             8px;
+    background-color:    transparent;
+    children:            [ "inputbar", "listview" ];
+}
+
+inputbar {
+    padding:             6px 10px;
+    spacing:             6px;
+    border:              1px solid;
+    border-radius:       10px;
+    border-color:        @glass-sheen;
+    background-color:    transparent;
+    text-color:          @foreground;
+    children:            [ "prompt", "entry" ];
+}
+
+prompt {
+    text-color:          @selected;
+    background-color:    inherit;
+}
+
+entry {
+    background-color:    inherit;
+    text-color:          inherit;
+    cursor:              text;
+    placeholder:         "Search wallpapers…";
+    placeholder-color:   @foreground;
+}
+
+listview {
+    columns:             3;
+    lines:               3;
+    scrollbar:           false;
+    spacing:             6px;
+    fixed-height:        true;
+    fixed-columns:       true;
+    layout:              vertical;
+    background-color:    transparent;
+}
+
+element {
+    orientation:         vertical;
+    padding:             6px;
+    spacing:             4px;
+    border-radius:       10px;
+    background-color:    transparent;
+    text-color:          @foreground;
+    cursor:              pointer;
+}
+
+element normal.normal {
+    background-color:    transparent;
+    text-color:          @foreground;
+}
+
+element selected.normal {
+    background-color:    @glass-sel;
+    border:              1px solid;
+    border-color:        @selected;
+    text-color:          @foreground;
+}
+
+element-icon {
+    size:                148px;
+    border-radius:       8px;
+    cursor:              inherit;
+    background-color:    transparent;
+}
+
+element-text {
+    horizontal-align:    0.5;
+    vertical-align:      0.5;
+    cursor:              inherit;
+    background-color:    transparent;
+    text-color:          inherit;
+}
+
+error-message {
+    padding:             15px;
+    border:              1px solid;
+    border-radius:       12px;
+    border-color:        @glass-sheen;
+    background-color:    @glass;
+    text-color:          @foreground;
+}

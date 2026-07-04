@@ -17,10 +17,16 @@ set -euo pipefail
 
 ROFI_THEME="$HOME/.config/rofi/cliphist.rasi"
 CARD_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/cliphist/cards"
-LIMIT=60            # most-recent entries shown in the strip
-SZ=300              # rendered card size (px, square)
+LIMIT=14            # most-recent entries shown in the strip — 2 pages of 7, matching
+                    # the store cap in hyprland.lua. Fewer = faster rofi startup
+                    # (it loads/scales one card image per entry).
+SZ=300              # rendered card source resolution (px, square). rofi downscales
+                    # to the rasi `element-icon size`; don't lower this or already-
+                    # cached 300px cards won't match new ones.
 # ImageMagick needs a font *file*, not a family name — resolve via fontconfig.
-FONT="$(fc-match -f '%{file}' 'Adwaita Sans' 2>/dev/null || true)"
+# Monospace (Adwaita Mono) gives the terminal-style card look.
+FONT="$(fc-match -f '%{file}' 'Adwaita Mono' 2>/dev/null || true)"
+[ -n "$FONT" ] || FONT="$(fc-match -f '%{file}' monospace 2>/dev/null || true)"
 [ -n "$FONT" ] || FONT="$(fc-match -f '%{file}' sans 2>/dev/null || true)"
 
 if ! command -v cliphist >/dev/null 2>&1; then
@@ -83,7 +89,7 @@ render_card() {
             # short snippets read large and long ones shrink to fit.
             magick -background "$CARD_BG" -fill "$CARD_FG" -font "$FONT" \
                 -size "$((SZ-44))x$((SZ-44))" -gravity northwest "caption:$txt" \
-                -background "$CARD_BG" -gravity center -extent "${SZ}x${SZ}" "PNG:$tmp" 2>/dev/null || return 0
+                -background "$CARD_BG" -gravity north -extent "${SZ}x${SZ}" "PNG:$tmp" 2>/dev/null || return 0
             ;;
     esac
     [ -f "$tmp" ] && mv "$tmp" "$card"

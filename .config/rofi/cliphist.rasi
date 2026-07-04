@@ -1,21 +1,21 @@
 /**
- * Clipboard history theme — Pano / Copyous-style card grid.
- *   • Flowing grid of rounded preview cards (thumbnail on top, caption below).
- *   • Accent border + lift on the selected card.
- *   • Colours come from pywal so it tracks the active wallpaper.
- * Used by ~/.config/hypr/scripts/cliphist-rofi.sh (SUPER+V).
+ * Clipboard history theme — card strip docked at the bottom, liquid-glass.
+ * Entries are fed as "text\0icon\x1fcard.png" by cliphist-rofi.sh (SUPER+V).
+ * Cards (130px logical, rendered 2x by the script) are pre-baked with rounded
+ * corners + pango text, so each element is just the icon.
+ * Colors come from pywal via ~/.cache/wal/colors-rofi.rasi so it tracks the
+ * active wallpaper, matching the NixOS look.
  **/
-
-@import "~/.cache/wal/colors-rofi-dark.rasi"
+@import "~/.cache/wal/colors-rofi.rasi"
 
 * {
-    accent:        @selected-normal-background;
+    accent:        @selected;
     card-bg:       #ffffff12;
     card-bg-alt:   #ffffff08;
     card-sel-bg:   #ffffff1f;
     text-col:      @foreground;
     text-dim:      #ffffff80;
-    font:          "Adwaita Sans 11";
+    font:          "JetBrainsMono Nerd Font 10";
 }
 
 configuration {
@@ -23,103 +23,98 @@ configuration {
 }
 
 /*****----- Window -----*****/
-/* Docked as a horizontal strip across the lower part of the screen, like the
-   Copyous/Pano bar. anchor:south pins it to the bottom; full width + a small
-   lift off the edge. */
 window {
-    transparency:   "real";
-    location:       south;
-    anchor:         south;
-    fullscreen:     false;
-    width:          99%;
-    y-offset:       -14px;
-    border-radius:  20px;
-    padding:        0px;
-    background-color: @background;
-    cursor:         "default";
+    transparency:     "real";
+    location:         south;
+    anchor:           south;
+    fullscreen:       false;
+    width:            1014px;
+    y-offset:         -14px;
+    border-radius:    16px;
+    padding:          0px;
+    background-color: @glass;
+    cursor:           "default";
 }
 
 mainbox {
-    padding:    22px;
-    spacing:    18px;
+    padding:          12px;
+    spacing:          10px;
     background-color: transparent;
-    children:   [ "inputbar", "listview" ];
+    children:         [ "inputbar", "listview" ];
 }
 
 /*****----- Search bar -----*****/
 inputbar {
-    spacing:        12px;
-    padding:        14px 18px;
-    border-radius:  14px;
+    spacing:          8px;
+    padding:          8px 14px;
+    border-radius:    10px;
     background-color: @card-bg-alt;
-    text-color:     @text-col;
-    children:       [ "prompt", "entry" ];
+    text-color:       @text-col;
+    children:         [ "prompt", "entry" ];
 }
 prompt {
-    enabled:     true;
-    text-color:  @accent;
+    enabled:          true;
+    text-color:       @accent;
     background-color: transparent;
 }
 entry {
-    placeholder:        "Search clipboard…";
-    placeholder-color:  @text-dim;
-    text-color:         @text-col;
-    background-color:   transparent;
-    cursor:             text;
+    placeholder:       "Search clipboard…";
+    placeholder-color: @text-dim;
+    text-color:        @text-col;
+    background-color:  transparent;
+    cursor:            text;
 }
 
-/*****----- Card strip (single horizontal row, scrolls sideways) -----*****/
+/*****----- Card strip -----*****/
 listview {
-    columns:        7;
-    lines:          1;
-    cycle:          true;
-    dynamic:        true;
-    scrollbar:      false;
-    layout:         vertical;
-    fixed-height:   true;
-    fixed-columns:  true;
-    spacing:        14px;
-    padding:        2px;
+    columns:       7;
+    lines:         1;
+    cycle:         true;
+    dynamic:       true;
+    scrollbar:     false;
+    layout:        vertical;
+    fixed-height:  true;
+    fixed-columns: true;
+    spacing:       8px;
+    padding:       2px;
     background-color: transparent;
-    text-color:     @text-col;
+    text-color:    @text-col;
 }
 
 /*****----- Cards -----*****/
-/* Each entry is a pre-rendered square card image (text/colour/thumbnail are
-   baked in by the script), so the element is just the icon — no caption. */
 element {
-    padding:        8px;
-    border:         2px solid;
-    border-radius:  16px;
-    border-color:   transparent;
-    background-color: @card-bg;
-    text-color:     @text-col;
-    cursor:         pointer;
-    children:       [ "element-icon" ];
+    padding:          0px;
+    border:           2px solid;
+    border-radius:    14px;
+    border-color:     transparent;
+    background-color: transparent;
+    text-color:       @text-col;
+    cursor:           pointer;
+    children:         [ "element-icon" ];
 }
 element alternate.normal {
-    background-color: @card-bg;
+    background-color: transparent;
 }
 element selected.normal {
-    background-color: @card-sel-bg;
+    background-color: transparent;
     border-color:     @accent;
     text-color:       @text-col;
 }
 element-icon {
-    size:           200px;
+    size:             130px;
     horizontal-align: 0.5;
-    vertical-align: 0.5;
+    vertical-align:   0.5;
     background-color: transparent;
-    cursor:         inherit;
+    cursor:           inherit;
 }
 element-text {
-    enabled:        false;
+    enabled: false;
 }
 
 /*****----- Messages -----*****/
 error-message {
-    padding:        15px;
-    border-radius:  14px;
-    background-color: @background;
-    text-color:     @text-col;
+    padding:          12px;
+    border-radius:    10px;
+    background-color: @glass;
+    text-color:       @text-col;
 }

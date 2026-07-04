@@ -2,15 +2,21 @@
         "layer": "top",
         "position": "top",
         "spacing": 0,
+        "height": 40,
+        "margin-top": 6,
+        "margin-left": 12,
+        "margin-right": 12,
         "reload_style_on_change": true,
-        "modules-left": ["custom/clipboard", "clock"],
+        "modules-left": ["custom/clipboard", "clock", "custom/notification"],
         "modules-center": ["hyprland/workspaces"],
-        "modules-right": ["group/expand", "backlight", "pulseaudio", "bluetooth", "network", "battery", "custom/notification", "tray"],
+        "modules-right": ["group/controls", "group/connectivity", "battery", "tray"],
 
         "hyprland/workspaces": {
             "format": "{name}",
             "on-click": "activate",
             "sort-by-number": true,
+            "on-scroll-up": "hyprctl dispatch workspace e+1",
+            "on-scroll-down": "hyprctl dispatch workspace e-1",
             "persistent-workspaces": {
                 "*": [ 1, 2, 3, 4, 5 ]
             }
@@ -21,18 +27,23 @@
             "on-click": "$HOME/.config/hypr/scripts/cliphist-rofi.sh",
             "on-click-right": "cliphist wipe"
         },
-        "custom/colorpicker": {
-            "format": "{}",
-            "return-type": "json",
-            "interval": "once",
-            "exec": "$HOME/.config/waybar/scripts/colorpicker.sh -j",
-            "on-click": "$HOME/.config/waybar/scripts/colorpicker.sh",
-            "signal": 1
-        },
         "custom/notification": {
             "tooltip": false,
-            "format": "",
+            "format": "{icon}",
+            "format-icons": {
+                "notification": "󰂚",
+                "none": "󰂜",
+                "dnd-notification": "󰂛",
+                "dnd-none": "󰪑",
+                "inhibited-notification": "󰂚",
+                "inhibited-none": "󰂜",
+                "dnd-inhibited-notification": "󰂛",
+                "dnd-inhibited-none": "󰪑"
+            },
+            "return-type": "json",
+            "exec": "swaync-client -swb",
             "on-click": "swaync-client -t -sw",
+            "on-click-right": "swaync-client -d -sw",
             "escape": true
         },
         "clock": {
@@ -59,10 +70,11 @@
         },
         "pulseaudio": {
         "format": "{icon}  {volume}%",
-        "format-bluetooth": "󰂱 {volume}%",
-        "format-muted": "󰖁",
-        "scroll-step": 1,
+        "format-bluetooth": "󰂱  {volume}%",
+        "format-muted": "󰖁  Muted",
+        "scroll-step": 5,
         "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "ignored-sinks": ["Easy Effects Sink"],
         "format-icons": {
             "headphone": "",
@@ -71,13 +83,16 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["󰖀", "󰕾"]
+            "default": ["󰕿", "󰖀", "󰕾"]
             },
         "tooltip-format": "Volume: {volume}%"
         },
         "backlight": {
             "device": "intel_backlight",
             "format": "{icon}  {percent}%",
+            "on-scroll-up": "brightnessctl set 5%+",
+            "on-scroll-down": "brightnessctl set 5%-",
+            "tooltip-format": "Brightness: {percent}%",
             "format-icons": ["󰃞", "󰃟", "󰃠"]
         },
         "network": {
@@ -86,7 +101,7 @@
             "format-ethernet": "󰈀  Wired",
             "format-disconnected": "󰖪  Offline",
             "format-linked": "󰖩  {ifname} (No IP)",
-            "max-length": 18,
+            "max-length": 24,
             "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ipaddr}\n{frequency} GHz",
             "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
             "tooltip-format-disconnected": "Disconnected",
@@ -96,8 +111,8 @@
             "format-on": "󰂯",
             "format-off": "󰂲",
             "format-disabled": "󰂲",
-            "format-connected": "󰂱 {num_connections}",
-            "format-connected-battery": "󰂱 {device_battery_percentage}%",
+            "format-connected": "󰂱  {num_connections}",
+            "format-connected-battery": "󰂱  {device_battery_percentage}%",
             "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
             "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
             "tooltip-format-enumerate-connected": "{device_alias}\n{device_address}",
@@ -122,40 +137,19 @@
                 "󰂀",
                 "󰂂",
                 "󰁹"
-            ]
+            ],
+            "tooltip-format": "{capacity}%  •  {timeTo}"
         },
-        "custom/expand": {
-            "format": "",
-            "tooltip": false
-        },
-        "custom/endpoint":{
-            "format": "|",
-            "tooltip": false
-        },
-        "group/expand": {
+        "group/controls": {
             "orientation": "horizontal",
-            "drawer": {
-                "transition-duration": 500,
-                "transition-to-left": true,
-                "click-to-reveal": true
-            },
-            "modules": ["custom/expand", "cpu", "memory", "temperature", "custom/endpoint"]
+            "modules": ["backlight", "pulseaudio"]
         },
-        "cpu": {
-            "format": "󰻠  {usage}%",
-            "interval": 5,
-            "tooltip": true
-        },
-        "memory": {
-            "format": "  {percentage}%",
-            "interval": 5
-        },
-        "temperature": {
-            "critical-threshold": 80,
-            "format": "  {temperatureC}°C"
+        "group/connectivity": {
+            "orientation": "horizontal",
+            "modules": ["network", "bluetooth"]
         },
         "tray": {
             "icon-size": 16,
-            "spacing": 8
+            "spacing": 10
         }
 }

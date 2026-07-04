@@ -2,7 +2,7 @@
 
 # Ensure this matches your actual directory
 WALLPAPER_DIR="$HOME/wallpapers/"
-ROFI_THEME="$HOME/.config/awww/wallpaper-grid.rasi"
+ROFI_THEME="$HOME/.config/rofi/wallpaper.rasi"
 ROFI_CONFIG="$HOME/.config/rofi/config.rasi"
 
 menu() {

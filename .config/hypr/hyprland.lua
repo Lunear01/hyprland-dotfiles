@@ -112,7 +112,7 @@ hl.config({
         gaps_in  = 2,
         gaps_out = 6,
 
-        border_size = 2,
+        border_size = 1,
 
         -- Animated gradient border on the focused window, driven by the pywal
         -- palette (bright slots 13/12/14) so the accent tracks the wallpaper.

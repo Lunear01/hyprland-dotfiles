@@ -82,8 +82,10 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("sleep 1 && awww img " .. home .. "/wallpapers/pywallpaper.jpg --transition-type any")
 
     -- Clipboard history (text + images) — requires `cliphist`
-    hl.exec_cmd("wl-paste --type text --watch cliphist store")
-    hl.exec_cmd("wl-paste --type image --watch cliphist store")
+    -- Keep only the 7 most recent entries so the store stays small and the
+    -- SUPER+V picker (which builds preview cards) starts up fast.
+    hl.exec_cmd("wl-paste --type text --watch cliphist store -max-items 7")
+    hl.exec_cmd("wl-paste --type image --watch cliphist store -max-items 7")
 end)
 
 

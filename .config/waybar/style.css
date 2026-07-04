@@ -19,12 +19,12 @@
 @define-color fg        @foreground;
 @define-color muted     alpha(@foreground, 0.5);
 
-/* Fixed brand accents — kept constant so they stay vivid and legible no matter
- * how muddy the colors pywal extracts from a given wallpaper. Background/
- * foreground still track the wallpaper above. */
-@define-color accent    #3a86ff;   /* primary   — clock, network, volume      */
-@define-color accent2   #9d4edd;   /* secondary — backlight, bluetooth        */
-@define-color accent3   #ff7096;   /* tertiary  — clipboard, notifications     */
+/* Wallpaper-driven accents — mapped to pywal's bright/saturated slots so they
+ * track the current wallpaper while staying legible on the dark glass. The
+ * @color* vars come from the pywal template imported above. */
+@define-color accent    @color13;   /* primary   — clock, network, volume      */
+@define-color accent2   @color12;   /* secondary — backlight, bluetooth        */
+@define-color accent3   @color14;   /* tertiary  — clipboard, notifications     */
 
 @define-color warning   #ffb454;
 @define-color critical  #ff5370;

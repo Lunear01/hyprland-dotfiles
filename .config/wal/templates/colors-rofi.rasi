@@ -5,9 +5,9 @@
  * DESIGN SPLIT:
  *   - background / foreground / glass body  = wallpaper-driven (pywal), so the
  *     theme tints with the current wallpaper.
- *   - selected / active / urgent accents    = FIXED brand colors (blue/purple/
- *     pink), so the highlight is always vivid and legible no matter how muddy
- *     the colors pywal extracts from a given wallpaper.
+ *   - selected / active / urgent accents    = wallpaper-driven too, mapped to
+ *     pywal's bright/saturated slots (color13/12/14) so the highlight tracks
+ *     the wallpaper while staying legible on the dark glass.
  *
  * The glass-* fills use a LOW alpha byte (#rrggbb -> #rrggbbaa) so the Hyprland
  * layer blur (layer_rule on the "rofi" namespace) frosts the wallpaper through
@@ -17,14 +17,14 @@
     background-alt: {color8};
     foreground:     {foreground};
 
-    /* Fixed brand accents — constant across wallpapers. */
-    selected:       #3a86ff;   /* primary  — vivid blue   */
-    active:         #9d4edd;   /* purple                  */
-    urgent:         #ff7096;   /* pink                    */
+    /* Wallpaper-driven accents — pywal bright slots. */
+    selected:       {color13};   /* primary  — bright blue-ish  */
+    active:         {color12};   /* secondary — bright mauve    */
+    urgent:         {color14};   /* tertiary  — bright pink     */
 
     /* Liquid glass — low-alpha translucent fills for the blur to frost. */
     glass:          {background}80;   /* ~50% — main window pane          */
     glass-alt:      {foreground}14;    /* ~8%  — inputbar/rows            */
     glass-sheen:    {foreground}26;    /* ~15% — hairline highlight edge  */
-    glass-sel:      #3a86ff4d;         /* ~30% — soft translucent-blue selection */
+    glass-sel:      {color13}4d;       /* ~30% — soft translucent selection (tracks accent) */
 }}

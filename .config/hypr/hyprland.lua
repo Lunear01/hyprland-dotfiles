@@ -22,6 +22,9 @@ local palette = {
     color7  = "rgba(d6d6d6ff)",
     color8  = "rgba(595959ff)",
     color9  = "rgba(8ab4ffff)",
+    color12 = "rgba(9d4eddff)",
+    color13 = "rgba(3a86ffff)",
+    color14 = "rgba(ff7096ff)",
 }
 
 local ok, generated = pcall(dofile, home .. "/.cache/wal/colors-hyprland.lua")
@@ -111,11 +114,11 @@ hl.config({
 
         border_size = 2,
 
-        -- Animated brand gradient border on the focused window. Fixed colors
-        -- (blue -> purple -> pink) so the accent stays vivid regardless of the
-        -- wallpaper pywal extracts; the palette table still tints elsewhere.
+        -- Animated gradient border on the focused window, driven by the pywal
+        -- palette (bright slots 13/12/14) so the accent tracks the wallpaper.
+        -- Falls back to the fixed blue/purple/pink above if the cache is absent.
         col = {
-            active_border   = { colors = { "rgba(3a86ffff)", "rgba(9d4eddff)", "rgba(ff7096ff)" }, angle = 45 },
+            active_border   = { colors = { palette.color13, palette.color12, palette.color14 }, angle = 45 },
             inactive_border = "rgba(4a4a55ff)",
         },
 

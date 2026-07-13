@@ -71,7 +71,7 @@ hl.on("hyprland.start", function()
 
     -- Status bar, idle daemon, input method, wallpaper daemon
     hl.exec_cmd(uwsm .. "waybar")
-    hl.exec_cmd("hypridle")
+    hl.exec_cmd("systemctl --user restart hypridle.service")
     hl.exec_cmd(uwsm .. "fcitx5 -d")
     hl.exec_cmd(uwsm .. "awww-daemon")
 
@@ -268,7 +268,8 @@ hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist wipe")) -- clear hi
 
 -- Wallpaper picker + screen lock/suspend
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(home .. "/.config/awww/wallpaper.sh"))
-hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("loginctl lock-session && sleep 1 && systemctl suspend"))
+hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("loginctl lock-session"))
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("loginctl lock-session && sleep 1 && systemctl suspend"))
 
 -- Screenshots (hyprshot)
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region; pkill hyprpicker; pkill hyprshot"))

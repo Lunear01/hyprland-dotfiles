@@ -1,8 +1,7 @@
 /**
- * Clipboard history theme — card strip docked at the bottom, liquid-glass.
- * Entries are fed as "text\0icon\x1fcard.png" by cliphist-rofi.sh (SUPER+V).
- * Cards (130px logical, rendered 2x by the script) are pre-baked with rounded
- * corners + pango text, so each element is just the icon.
+ * Clipboard history theme — card grid, liquid-glass.
+ * Entries are fed as "value\0display\x1f<text>\x1ficon\x1f<card.png>" by
+ * cliphist-rofi.sh (SUPER+V). Each element is just the pre-baked card image.
  * Colors come from pywal via ~/.cache/wal/colors-rofi.rasi so it tracks the
  * active wallpaper, matching the NixOS look.
  **/
@@ -10,12 +9,9 @@
 
 * {
     accent:        @selected;
-    card-bg:       #ffffff12;
-    card-bg-alt:   #ffffff08;
-    card-sel-bg:   #ffffff1f;
     text-col:      @foreground;
     text-dim:      #ffffff80;
-    font:          "JetBrainsMono Nerd Font 10";
+    font:          "JetBrainsMono Nerd Font 11";
 }
 
 configuration {
@@ -25,20 +21,19 @@ configuration {
 /*****----- Window -----*****/
 window {
     transparency:     "real";
-    location:         south;
-    anchor:           south;
+    location:         center;
+    anchor:           center;
     fullscreen:       false;
-    width:            1014px;
-    y-offset:         -14px;
-    border-radius:    16px;
+    width:            980px;
+    border-radius:    18px;
     padding:          0px;
     background-color: @glass;
     cursor:           "default";
 }
 
 mainbox {
-    padding:          12px;
-    spacing:          10px;
+    padding:          16px;
+    spacing:          12px;
     background-color: transparent;
     children:         [ "inputbar", "listview" ];
 }
@@ -46,9 +41,9 @@ mainbox {
 /*****----- Search bar -----*****/
 inputbar {
     spacing:          8px;
-    padding:          8px 14px;
+    padding:          9px 14px;
     border-radius:    10px;
-    background-color: @card-bg-alt;
+    background-color: #ffffff10;
     text-color:       @text-col;
     children:         [ "prompt", "entry" ];
 }
@@ -65,17 +60,17 @@ entry {
     cursor:            text;
 }
 
-/*****----- Card strip -----*****/
+/*****----- Card grid -----*****/
 listview {
-    columns:       7;
-    lines:         1;
+    columns:       5;
+    lines:         3;
     cycle:         true;
     dynamic:       true;
     scrollbar:     false;
     layout:        vertical;
     fixed-height:  true;
     fixed-columns: true;
-    spacing:       8px;
+    spacing:       10px;
     padding:       2px;
     background-color: transparent;
     text-color:    @text-col;
@@ -83,25 +78,24 @@ listview {
 
 /*****----- Cards -----*****/
 element {
-    padding:          0px;
+    padding:          10px;
     border:           2px solid;
     border-radius:    14px;
-    border-color:     transparent;
-    background-color: transparent;
+    border-color:     #ffffff1a;
+    background-color: #ffffff0e;
     text-color:       @text-col;
     cursor:           pointer;
     children:         [ "element-icon" ];
 }
-element alternate.normal {
-    background-color: transparent;
-}
+element normal.normal    { background-color: #ffffff0e; }
+element alternate.normal { background-color: #ffffff0e; }
 element selected.normal {
-    background-color: transparent;
+    background-color: #ffffff1c;
     border-color:     @accent;
     text-color:       @text-col;
 }
 element-icon {
-    size:             130px;
+    size:             150px;
     horizontal-align: 0.5;
     vertical-align:   0.5;
     background-color: transparent;
